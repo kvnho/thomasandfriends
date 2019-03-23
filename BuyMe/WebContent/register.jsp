@@ -12,16 +12,23 @@
 		<h1>Register Page</h1>
 		<form action="registerHandler.jsp" method="POST">
 			<label>First Name</label>
-			<input type="text" name=firstName" placeholder="First Name">
+			<input type="text" name="firstName" placeholder="First Name">
 			<br>
 			
 			<label>Last Name</label>
-			<input type="text" name=lastName" placeholder="Last Name">
+			<input type="text" name="lastName" placeholder="Last Name">
 			<br>
 			
+			<label>Address</label>
+			<input type="text" name="address" placeholder="Address">
+			<br>
+			
+			<label>Email</label>
+			<input type="text" name="email" placeholder="Email">
+			<br>
 			
 			<label>Username</label>
-			<input type="text" name=username" placeholder="Username">
+			<input type="text" name="username" placeholder="Username">
 			<br>
 			
 			<label>Password</label>
