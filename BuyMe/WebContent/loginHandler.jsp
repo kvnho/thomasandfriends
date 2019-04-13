@@ -11,11 +11,11 @@
 
 <%
 
+	//session = request.getSession();
 	try{
-		
-		String url = "jdbc:mysql://127.0.0.1:3306/firstconnection?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC";
-		Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-		Connection connection = DriverManager.getConnection(url, "root", "placeholder");
+		String url = "jdbc:mysql://cs336db.cvs3tkn3ttbi.us-east-1.rds.amazonaws.com/BuyMe?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC";
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection connection = DriverManager.getConnection(url, "cs336", "thomasandfriends");
 		Statement statement = connection.createStatement();
 		
 		String username = request.getParameter("username");
@@ -25,10 +25,13 @@
 
 		ResultSet result = statement.executeQuery(query);
 		if(result.next()){
-				out.println("Login successful!");
+			session.setAttribute("username", username);
+			out.println("Login successful! Welcome " + username);
+			out.println("<br><a href='logoutHandler.jsp'> Logout </a>");
 		}
 		else{
-			out.println("Login failed! Wrong credentials");
+			out.println("Login failed! Wrong credentials <br> <a href='index.jsp'> Try again </a>");
+			
 		}
 
 		//Close the connection. Don't forget to do it, otherwise you're keeping the resources of the server allocated.

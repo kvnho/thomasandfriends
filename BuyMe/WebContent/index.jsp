@@ -10,7 +10,7 @@
 <body>
 	<div>
 		<h1>Login Page</h1>
-		<form action="loginHandler.jsp" method="GET">
+		<form action="loginHandler.jsp" method="POST">
 			<input type="text" name="username" placeholder="Username">
 			<br>
 			<input type="password" name="password" placeholder="Password">

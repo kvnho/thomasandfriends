@@ -23,10 +23,6 @@
 			<input type="text" name="address" placeholder="Address">
 			<br>
 			
-			<label>Email</label>
-			<input type="text" name="email" placeholder="Email">
-			<br>
-			
 			<label>Username</label>
 			<input type="text" name="username" placeholder="Username">
 			<br>
