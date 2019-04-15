@@ -9,6 +9,17 @@
 </head>
 <body>
 	<div>
+		<h3>NAV BAR</h3>
+		<ul>
+			<li><a href="welcome.jsp">HOME</a></li>
+			<li><a href="createAuction.jsp">CREATE AUCTION</a></li>
+			<li><a href="listings.jsp">SEE LISTINGS</a></li>
+			<li><a href="alerts.jsp">ALERTS</a>
+			
+		</ul>
+		<hr>
+	</div>
+	<div>
 		<h1>Create Auction</h1>
 		<form action="createAuctionHandler.jsp" method="POST">
 			<label>Listing Name: </label>

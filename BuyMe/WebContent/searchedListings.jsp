@@ -39,7 +39,8 @@
 			Connection connection = DriverManager.getConnection(url, "cs336", "thomasandfriends");
 			Statement statement = connection.createStatement();
 			
-			String query = "SELECT * FROM Listing";
+			String query = "SELECT * FROM Listing WHERE listing_name LIKE '%" + request.getParameter("search_string") + "%'" + "OR listing_description LIKE '%" +  request.getParameter("search_string") + "%'";
+
 			ResultSet result = statement.executeQuery(query);
 			while(result.next()){
 				
@@ -51,36 +52,23 @@
 				
 				
 				double highestBid = 0;
-				int auctionID = 0;
 				
 				if(auctionResult.next()){
 					highestBid = auctionResult.getDouble("highest_bid");
-					auctionID = auctionResult.getInt("auction_id");
-				}%>
-				<p>LISTING ID: <%out.print(result.getString("listing_id")); %></p>
-				<p>ITEM NAME: <%out.print(result.getString("listing_name")); %></p>
-				<p>ITEM DESCRIPTION: <%out.print(result.getString("listing_description")); %></p>
-				<p>ITEM CATEGORY: <%out.print(result.getString("item_category")); %></p>
-				<p>HIGHEST BID: $<%out.print(highestBid); %></p>
-				<form action="showAllBids.jsp" method="POST">
-					<input type="hidden" name="a_id" value="<%=auctionID%>">	
-					<input type="submit" value="Show Previous Bids">	
-									
-				</form>
-				<br>
-				<form action="bidHandler.jsp" method="POST">
-					<br>
-					<label>Insert Bid: </label>
-					<input type="hidden" name="auction_id" value="<%=auctionID%>">					
-					<input type="number" min="0" name="bid" step="any"/>
-					<input type="submit" value="Submit Bid">		
-				</form>
-				<br>
-				<hr>
-				<br>
+				}
+								
 				
+				out.print("<p>LISTING ID: "+result.getString("listing_id")+"</p>");
+				out.print("<p>ITEM NAME: "+result.getString("listing_name")+"</p>");
+				out.print("<p>ITEM DESCRIPTION: "+result.getString("listing_description")+"</p>");
+				out.print("<p>ITEM CATEGORY: "+ result.getString("item_category")+"</p>");
+				out.print("<p>HIGHEST BID: $"+ highestBid +"</p>");
 
-			<%
+				//out.print("<button>Show/Hide Bid History</button>");
+				out.print("<br>");
+				out.print("<hr>");
+				out.print("<br>");
+				
 			}
 
 			//Close the connection. Don't forget to do it, otherwise you're keeping the resources of the server allocated.
@@ -100,10 +88,4 @@
 	*/
 	%>
 </body>
-<script type="text/javascript">
-	function alertName(){
-
-		alert("a");
-	} 
-</script> 
 </html>

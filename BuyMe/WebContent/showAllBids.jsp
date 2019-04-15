@@ -5,8 +5,21 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<title>Bid History</title>
 </head>
 <body>
+	<div>
+		<h3>NAV BAR</h3>
+		<ul>
+			<li><a href="welcome.jsp">HOME</a></li>
+			<li><a href="createAuction.jsp">CREATE AUCTION</a></li>
+			<li><a href="listings.jsp">SEE LISTINGS</a></li>
+			<li><a href="alerts.jsp">ALERTS</a>
+			
+		</ul>
+		<hr>
+	</div>
+	<h1>Bid History</h1>
 
 <%
 
@@ -16,19 +29,20 @@
 		Connection connection = DriverManager.getConnection(url, "cs336", "thomasandfriends");
 		Statement statement = connection.createStatement();
 		
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
+		int auctionID = Integer.parseInt(request.getParameter("a_id"));
 		
-		String query = "SELECT * FROM account WHERE username=\"" + username + "\" AND password=\"" + password + "\"";
-
+		String query = "SELECT * FROM bid WHERE auction_id=\"" + auctionID + "\"";
+		
 		ResultSet result = statement.executeQuery(query);
-		if(result.next()){
-			session.setAttribute("username", username);
-		    response.sendRedirect("welcome.jsp");
-		}
-		else{
-			out.println("Login failed! Wrong credentials <br> <a href='index.jsp'> Try again </a>");
+		
+		out.print("<h3>AUCTION ID: " + auctionID + "</h3>");
+
+		while(result.next()){
+			%>
+			<p>TIME: <%out.print(result.getString("date_time") + " ----------- " + "BUYER ID: " + result.getString("buyer_id") + " ----------- " + "BID AMOUNT: " + result.getString("amount")); %></p>
 			
+			
+		<%	
 		}
 
 		//Close the connection. Don't forget to do it, otherwise you're keeping the resources of the server allocated.

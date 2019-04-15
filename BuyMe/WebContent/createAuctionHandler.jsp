@@ -26,29 +26,67 @@
 		double startingBid = Double.parseDouble(startingBidString);
 		String hiddenMinimumString = request.getParameter("hidden_minimum");
 		double hiddenMinimum = Double.parseDouble(hiddenMinimumString);
-		
-		// how to get date time from html
 		String endDateString = request.getParameter("sell_date");
-	    LocalDateTime currentTime = LocalDateTime.now();
-	    LocalDateTime endTime = LocalDateTime.now();
+		
+	    
+	    
+	    java.util.Date dt = new java.util.Date();
+	    java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
+	    //String currTime = format.format(dt);
+		//out.println("dt: " + dt.toString());
 		
 		
-		String insert = "INSERT INTO Listing(listing_id,listing_name,listing_description,item_category)"
+		
+		java.util.Date parsed;
+		java.text.SimpleDateFormat format2 = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+		parsed = format2.parse(endDateString);
+	    //String endTime = format.format(parsed);
+		//out.println("parsed: " + parsed.toString());
+
+		
+		Timestamp timestamp0 = new Timestamp(dt.getTime());
+		Timestamp timestamp = new Timestamp(parsed.getTime());
+	
+
+
+	
+		
+		// INSERTS THE NEW LISTING DETAILS INTO Listing TABLE
+		String insert = "INSERT INTO Listing(listing_name,listing_description,item_category)"
 				+ "VALUES (?,?,?)";
-		//Create a Prepared SQL statement allowing you to introduce the parameters of the query
 		PreparedStatement preparedStatement = connection.prepareStatement(insert);
-
-		//Add parameters of the query. Start with 1, the 0-parameter is the INSERT statement itself
-		preparedStatement.setString(2, listingName);
-		preparedStatement.setString(3, listingDescription);
-		preparedStatement.setString(4, listingCategory);
-
-		//Run the query against the DB
+		preparedStatement.setString(1, listingName);
+		preparedStatement.setString(2, listingDescription);
+		preparedStatement.setString(3, listingCategory);
 		preparedStatement.executeUpdate();
+		
+		
+		
+		// FETCHES THE LISTINGID FOR THE NEWLY CREATED LISTING
+		int lastRowListingId = 0;
+		String query = "SELECT listing_id FROM Listing ORDER BY listing_id DESC LIMIT 1";
+		ResultSet result = statement.executeQuery(query);
+		if(result.next()){
+		    lastRowListingId = result.getInt("listing_id");
+		}		
+
+		// INSERTS THE NEW LISTING DETAILS INTO auction TABLE
+		String insert2 = "INSERT INTO auction(seller_id,listing_id,date_time_posted,end_date_time,highest_bid,secret_min_bid)"
+				+ "VALUES (?,?,?,?,?,?)";
+		PreparedStatement preparedStatement2 = connection.prepareStatement(insert2);
+		preparedStatement2.setString(1, (String)session.getAttribute("username"));
+		preparedStatement2.setInt(2, lastRowListingId);
+		preparedStatement2.setTimestamp(3, timestamp0);
+		preparedStatement2.setTimestamp(4, timestamp);
+		preparedStatement2.setDouble(5, startingBid);
+		preparedStatement2.setDouble(6, hiddenMinimum);
+		preparedStatement2.executeUpdate();
+		
 		
 		//Close the connection. Don't forget to do it, otherwise you're keeping the resources of the server allocated.
 		connection.close();
-
+		
+	    response.sendRedirect("welcome.jsp");
 	}
 	catch (Exception e){
 	}
