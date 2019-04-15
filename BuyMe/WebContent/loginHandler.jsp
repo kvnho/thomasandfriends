@@ -24,11 +24,17 @@
 		ResultSet result = statement.executeQuery(query);
 		if(result.next()){
 			session.setAttribute("username", username);
-		    response.sendRedirect("welcome.jsp");
+			if(username.equals("admin")){
+				session.setAttribute("level", "1");
+				response.sendRedirect("adminWelcome.jsp");
+			}
+			else{
+				session.setAttribute("level", "3");
+				response.sendRedirect("welcome.jsp");
+			}
 		}
 		else{
 			out.println("Login failed! Wrong credentials <br> <a href='index.jsp'> Try again </a>");
-			
 		}
 
 		//Close the connection. Don't forget to do it, otherwise you're keeping the resources of the server allocated.

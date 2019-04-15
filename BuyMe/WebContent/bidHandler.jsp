@@ -14,6 +14,8 @@
 			<li><a href="createAuction.jsp">CREATE AUCTION</a></li>
 			<li><a href="listings.jsp">SEE LISTINGS</a></li>
 			<li><a href="alerts.jsp">ALERTS</a>
+			<li><a href="searchUsers.jsp">SEARCH USERS</a></li>
+			
 			
 		</ul>
 		<hr>
@@ -35,7 +37,7 @@
 	    java.util.Date dt = new java.util.Date();
 		Timestamp timestamp0 = new Timestamp(dt.getTime());
 
-		
+		// INSERT IN BID		
 		String insert = "INSERT INTO bid(buyer_id,amount,auction_id,date_time)"
 				+ "VALUES (?,?,?,?)";
 		//Create a Prepared SQL statement allowing you to introduce the parameters of the query
@@ -48,6 +50,16 @@
 		preparedStatement.setTimestamp(4, timestamp0);
 		//Run the query against the DB
 		preparedStatement.executeUpdate();
+		
+		
+		// UPDATE AUCTION HIGHEST BID W/ THE NEW BID
+		//insert = "UPDATE auction SET highest_bid=" + bid + " WHERE auction_id=" + auctionID;
+		insert = "UPDATE auction SET highest_bid=? WHERE auction_id=?";
+		preparedStatement = connection.prepareStatement(insert);
+		preparedStatement.setDouble(1, bid);
+		preparedStatement.setInt(2, auctionID);
+		preparedStatement.executeUpdate();
+
 		
 
 		//Close the connection. Don't forget to do it, otherwise you're keeping the resources of the server allocated.

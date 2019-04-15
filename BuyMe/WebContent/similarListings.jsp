@@ -16,8 +16,6 @@
 			<li><a href="listings.jsp">SEE LISTINGS</a></li>
 			<li><a href="alerts.jsp">ALERTS</a>
 			<li><a href="searchUsers.jsp">SEARCH USERS</a></li>
-			
-			
 		</ul>
 		<hr>
 	</div>
@@ -32,22 +30,23 @@
 	<br>
 	<br>
 	<hr>
+	<h1> Other Similar Items ...</h1>
 	<%
-
-		//session = request.getSession();
 		try{
 			String url = "jdbc:mysql://cs336db.cvs3tkn3ttbi.us-east-1.rds.amazonaws.com/BuyMe?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC";
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection connection = DriverManager.getConnection(url, "cs336", "thomasandfriends");
 			Statement statement = connection.createStatement();
 			
-			String query = "SELECT * FROM Listing";
+			String cat = request.getParameter("item_category");
+			String query = "SELECT * FROM Listing WHERE item_category=\"" + cat + "\"";
+			
 			ResultSet result = statement.executeQuery(query);
 			while(result.next()){
 				
 				String listingID = result.getString("listing_id");
 				String itemCategory = result.getString("item_category");
-				
+
 				Statement auctionStatement = connection.createStatement();
 				String auctionQuery = "SELECT * FROM auction WHERE listing_id=\"" + listingID + "\"";
 				ResultSet auctionResult = auctionStatement.executeQuery(auctionQuery);
@@ -57,12 +56,14 @@
 				int auctionID = 0;
 				double minPossible = 0;
 				String datePosted = "";
+
 				
 				if(auctionResult.next()){
 					highestBid = auctionResult.getDouble("highest_bid");
 					auctionID = auctionResult.getInt("auction_id");
 					minPossible = highestBid + 1;
 					datePosted = auctionResult.getString("date_time_posted");
+
 				}%>
 				<p>LISTING ID: <%out.print(result.getString("listing_id")); %></p>
 				<p>ITEM NAME: <%out.print(result.getString("listing_name")); %></p>
@@ -92,7 +93,6 @@
 				<br>
 				<hr>
 				<br>
-				
 
 			<%
 			}

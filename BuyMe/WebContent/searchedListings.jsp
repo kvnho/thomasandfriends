@@ -15,6 +15,8 @@
 			<li><a href="createAuction.jsp">CREATE AUCTION</a></li>
 			<li><a href="listings.jsp">SEE LISTINGS</a></li>
 			<li><a href="alerts.jsp">ALERTS</a>
+			<li><a href="searchUsers.jsp">SEARCH USERS</a></li>
+			
 			
 		</ul>
 		<hr>
@@ -40,11 +42,11 @@
 			Statement statement = connection.createStatement();
 			
 			String query = "SELECT * FROM Listing WHERE listing_name LIKE '%" + request.getParameter("search_string") + "%'" + "OR listing_description LIKE '%" +  request.getParameter("search_string") + "%'";
-
 			ResultSet result = statement.executeQuery(query);
 			while(result.next()){
 				
 				String listingID = result.getString("listing_id");
+				String itemCategory = result.getString("item_category");
 				
 				Statement auctionStatement = connection.createStatement();
 				String auctionQuery = "SELECT * FROM auction WHERE listing_id=\"" + listingID + "\"";
@@ -52,23 +54,47 @@
 				
 				
 				double highestBid = 0;
+				int auctionID = 0;
+				double minPossible = 0;
+				String datePosted = "";
 				
 				if(auctionResult.next()){
 					highestBid = auctionResult.getDouble("highest_bid");
-				}
-								
+					auctionID = auctionResult.getInt("auction_id");
+					minPossible = highestBid + 1;
+					datePosted = auctionResult.getString("date_time_posted");
+				}%>
+				<p>LISTING ID: <%out.print(result.getString("listing_id")); %></p>
+				<p>ITEM NAME: <%out.print(result.getString("listing_name")); %></p>
+				<p>ITEM DESCRIPTION: <%out.print(result.getString("listing_description")); %></p>
+				<p>ITEM CATEGORY: <%out.print(result.getString("item_category")); %></p>
+				<p>AUCTION ENDS: <%out.print(datePosted); %></p>
+				<br>
+				<p>HIGHEST BID: $<%out.print(highestBid); %></p>
+				<form action="showAllBids.jsp" method="POST">
+					<input type="hidden" name="a_id" value="<%=auctionID%>">	
+					<input type="submit" value="Show Previous Bids">		
+				</form>
+				<form action="bidHandler.jsp" method="POST">
+					<br>
+					<label>Insert Bid: </label>
+					<input type="hidden" name="auction_id" value="<%=auctionID%>">					
+					<input type="number" min="<%=minPossible%>" name="bid" step="any"/>
+					<input type="submit" value="Submit Bid">		
+				</form>
+				<br>
+				<br>
+				<br>
+				<form action="similarListings.jsp" method="POST">
+					<input type="hidden" name="item_category" value="<%=itemCategory%>">	
+					<input type="submit" value="See Similar Listings">		
+				</form>
+				<br>
+				<hr>
+				<br>
 				
-				out.print("<p>LISTING ID: "+result.getString("listing_id")+"</p>");
-				out.print("<p>ITEM NAME: "+result.getString("listing_name")+"</p>");
-				out.print("<p>ITEM DESCRIPTION: "+result.getString("listing_description")+"</p>");
-				out.print("<p>ITEM CATEGORY: "+ result.getString("item_category")+"</p>");
-				out.print("<p>HIGHEST BID: $"+ highestBid +"</p>");
 
-				//out.print("<button>Show/Hide Bid History</button>");
-				out.print("<br>");
-				out.print("<hr>");
-				out.print("<br>");
-				
+			<%
 			}
 
 			//Close the connection. Don't forget to do it, otherwise you're keeping the resources of the server allocated.
@@ -88,4 +114,10 @@
 	*/
 	%>
 </body>
+<script type="text/javascript">
+	function alertName(){
+
+		alert("a");
+	} 
+</script> 
 </html>
