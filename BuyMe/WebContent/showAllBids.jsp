@@ -39,7 +39,7 @@
 
 		while(result.next()){
 			%>
-			<p>TIME: <%out.print(result.getString("date_time") + " ----------- " + "BUYER ID: " + result.getString("buyer_id") + " ----------- " + "BID AMOUNT: " + result.getString("amount")); %></p>
+			<p>BID ID: <%out.print(result.getString("bid_id") + " ----------- " + "TIME: " + result.getString("date_time") + " ----------- " + "BUYER ID: " + result.getString("buyer_id") + " ----------- " + "BID AMOUNT: " + result.getString("amount")); %></p>
 			
 			
 		<%	

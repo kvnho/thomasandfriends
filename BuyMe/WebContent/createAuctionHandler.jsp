@@ -46,7 +46,8 @@
 		
 		Timestamp timestamp0 = new Timestamp(dt.getTime());
 		Timestamp timestamp = new Timestamp(parsed.getTime());
-	
+
+
 
 
 	
@@ -69,6 +70,10 @@
 		if(result.next()){
 		    lastRowListingId = result.getInt("listing_id");
 		}		
+		
+		
+		
+		
 
 		// INSERTS THE NEW LISTING DETAILS INTO auction TABLE
 		String insert2 = "INSERT INTO auction(seller_id,listing_id,date_time_posted,end_date_time,highest_bid,secret_min_bid)"
@@ -83,12 +88,44 @@
 		preparedStatement2.executeUpdate();
 		
 		
+		
+		
+		
+		
+		// SEARCH THRU alert TABLE AND MATCHES THE 3 FIELDS
+		String checkout = "" + lastRowListingId;
+		String fetchUsers = "SELECT * FROM alert WHERE listing_name=\"" + listingName + "\" AND listing_description=\"" + listingDescription + "\" AND item_category=\"" + listingCategory + "\"";
+		ResultSet resultUsers = statement.executeQuery(fetchUsers);
+		
+	    java.util.Date dt2 = new java.util.Date();
+		Timestamp timestamp2 = new Timestamp(dt2.getTime());
+
+
+		while(resultUsers.next()){
+			// how to get info from set
+			String userID = resultUsers.getString("user_id");
+			// SEND EMAIL/ALERT
+			String insert3 = "INSERT INTO email(from_to,to_from,date_time,subject,content)"
+					+ "VALUES (?,?,?,?,?)";
+			PreparedStatement preparedStatement3 = connection.prepareStatement(insert3);
+
+			preparedStatement3.setString(1, "admin");
+			preparedStatement3.setString(2, userID);
+			preparedStatement3.setTimestamp(3, timestamp0);
+			preparedStatement3.setString(4, "New Listing Found!");
+			preparedStatement3.setString(5, "Check out Listing ID: " + checkout + " || " + "Listing Name: " + listingName + " || " + "Listing Description: " + listingDescription);
+			
+			preparedStatement3.executeUpdate();
+		}
+		
+		
 		//Close the connection. Don't forget to do it, otherwise you're keeping the resources of the server allocated.
 		connection.close();
 		
 	    response.sendRedirect("welcome.jsp");
 	}
 	catch (Exception e){
+		out.print(e);
 	}
 %>
 

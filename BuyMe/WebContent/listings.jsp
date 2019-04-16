@@ -33,8 +33,6 @@
 	<br>
 	<hr>
 	<%
-
-		//session = request.getSession();
 		try{
 			String url = "jdbc:mysql://cs336db.cvs3tkn3ttbi.us-east-1.rds.amazonaws.com/BuyMe?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC";
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -75,12 +73,19 @@
 					<input type="hidden" name="a_id" value="<%=auctionID%>">	
 					<input type="submit" value="Show Previous Bids">		
 				</form>
+				<br>
 				<form action="bidHandler.jsp" method="POST">
 					<br>
 					<label>Insert Bid: </label>
+					<input type="hidden" name="list_id" value="<%=listingID%>">							
 					<input type="hidden" name="auction_id" value="<%=auctionID%>">					
-					<input type="number" min="<%=minPossible%>" name="bid" step="any"/>
-					<input type="submit" value="Submit Bid">		
+					<input type="number" min="<%=minPossible%>" name="bid" step="any" value="<%=minPossible%>"/>
+					<br>
+					<label>Enter value to enable automatic bidding?: </label>
+					<input type="number" min="<%=minPossible %>" name="auto_bid" step="any" value="0"/>
+					<br>
+					<br>
+					<input type="submit" value="Submit Bid">	
 				</form>
 				<br>
 				<br>
@@ -104,14 +109,6 @@
 		catch (Exception e){
 			out.print(e);
 		}
-	%>
-
-	<%
-	/*
-		for(int i = 0; i < 100; i++){
-			out.print("<p>Item</p>");
-		}
-	*/
 	%>
 </body>
 <script type="text/javascript">

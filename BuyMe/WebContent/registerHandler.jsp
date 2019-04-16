@@ -30,8 +30,8 @@
 			throw new IllegalArgumentException("Form fields cannot be blank");
 		}
 		
-		String insert = "INSERT INTO account(first_name,last_name,address,username,password)"
-				+ "VALUES (?,?,?,?,?)";
+		String insert = "INSERT INTO account(first_name,last_name,address,username,password,account_type)"
+				+ "VALUES (?,?,?,?,?,?)";
 		//Create a Prepared SQL statement allowing you to introduce the parameters of the query
 		PreparedStatement preparedStatement = connection.prepareStatement(insert);
 
@@ -41,11 +41,22 @@
 		preparedStatement.setString(3, address);
 		preparedStatement.setString(4, username);
 		preparedStatement.setString(5, password);
+		if(((String)session.getAttribute("username")).equals("admin")){
+			preparedStatement.setInt(6, 2);
+		}
+		else{
+			preparedStatement.setInt(6, 3);
+		}
+
 		//Run the query against the DB
 		preparedStatement.executeUpdate();
 
 		//Close the connection. Don't forget to do it, otherwise you're keeping the resources of the server allocated.
 		connection.close();
+		if(((String)session.getAttribute("username")).equals("admin")){
+			response.sendRedirect("adminWelcome.jsp");
+		}
+		
 		out.println("Account Created! <br> <a href='index.jsp'> Log in </a>");
 
 	}

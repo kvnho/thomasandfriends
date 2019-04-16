@@ -24,12 +24,13 @@
 		ResultSet result = statement.executeQuery(query);
 		if(result.next()){
 			session.setAttribute("username", username);
+			session.setAttribute("level", "" + result.getInt("account_type"));
 			if(username.equals("admin")){
-				session.setAttribute("level", "1");
-				response.sendRedirect("adminWelcome.jsp");
+				//session.setAttribute("level", "1");
+				response.sendRedirect("welcome.jsp");
 			}
 			else{
-				session.setAttribute("level", "3");
+				//session.setAttribute("level", "3");
 				response.sendRedirect("welcome.jsp");
 			}
 		}

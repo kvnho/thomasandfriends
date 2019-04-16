@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Create Auction</title>
+<title>Create Alert</title>
 </head>
 <body>
 	<div>
@@ -22,29 +22,19 @@
 		</ul>
 		<hr>
 	</div>
-	<%
-   	 	java.util.Date dt = new java.util.Date();
-		Timestamp timestamp0 = new Timestamp(dt.getTime());
-		String s = timestamp0.toString();
-		s = s.substring(0, s.indexOf(' ')) + "T" + s.substring(s.indexOf(' ')+1, (s.indexOf('.')));
-
-	
-	%>
-	
 	<div>
-		<h1>Create Auction</h1>
-		<form action="createAuctionHandler.jsp" method="POST">
+		<h1>Create Alert</h1>
+		<form action="createAlertHandler.jsp" method="POST">
 			<label>Listing Name: </label>
 			<br>
 			<input type="text" name="listing_name">
-			
+			<br>
 			<br>
 			<label>Listing Description: </label>
 			<br>
 			<textarea type="text" name="listing_description"></textarea>
 			<br>
-			<br>
-			<label>Select a category: </label>
+			<p>Select a category: </p>
 			<select name="category">
 				<option value="Car">Car</option>
 				<option value="Plane">Plane</option>
@@ -52,23 +42,12 @@
 			</select>
 			<br>
 			<br>
-			<label>Starting Bid: </label>
 			<br>
-			<input type="number" min="0" name="starting_bid" step="any" value="0"/>
-			<br>
-			<label>Optional Reserve Price: </label>
-			<br>
-			<input type="number" min="0" name="hidden_minimum" step="any" value="0"/>
-			<br>
-			<label>End Date: </label>
-			<br>
-			<input type="datetime-local" min="<%=s%>" name="sell_date">
-			<br>
-			<br>
-			<br>
-			<input type="submit" value="Create Auction">		
+			<input type="submit" value="Create Alert">		
 			<br>
 		</form>
+		
+	
 	</div>
 
 </body>

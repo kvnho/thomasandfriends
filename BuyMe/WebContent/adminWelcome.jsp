@@ -31,7 +31,7 @@
 		<hr>
 		<h3>Admin Actions: </h3>
 		<ul>
-			<li><a href="">Create Customer Representative Account</a></li>
+			<li><a href="register.jsp">Create Customer Representative Account</a></li>
 			<li><a href="">Generate Sales Report</a></li>
 			<li><a href="">Remove Bids</a></li>
 			<li><a href="">Remove Auctions</a></li>
