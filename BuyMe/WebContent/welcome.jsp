@@ -20,11 +20,11 @@
 		<ul>
 			<li><a href="welcome.jsp">HOME</a></li>
 			<li><a href="createAuction.jsp">CREATE AUCTION</a></li>
-			<li><a href="listings.jsp">SEE LISTINGS</a></li>
-			<li><a href="createAlert.jsp">CREATE ALERT</a></li>
+			<li><a href="auctions.jsp">SEE AUCTIONS</a></li>
+			<li><a href="forum.jsp">FORUM</a></li>
 			<li><a href="alerts.jsp">ALERTS</a></li>
+			<li><a href="createAlert.jsp">CREATE ALERT</a></li>
 			<li><a href="searchUsers.jsp">SEARCH USERS</a></li>
-			
 		</ul>
 		<hr>
 	</div>
@@ -44,8 +44,8 @@
 			<ul>
 				<li><a href="register.jsp">Create Customer Representative Account</a></li>
 				<li><a href="">Generate Sales Report</a></li>
-				<li><a href="">Remove Bids</a></li>
-				<li><a href="">Remove Auctions</a></li>
+				<li><a href="deleteBid.jsp">Remove Bids</a></li>
+				<li><a href="deleteAuction.jsp">Remove Auction</a></li>
 				
 			</ul>
 			<%
@@ -62,7 +62,7 @@
 			<h3>Customer Rep Actions: </h3>
 			<ul>
 				<li><a href="deleteBid.jsp">Delete Bid</a></li>
-				<li><a href="deleteListing.jsp">Delete Listing</a></li>
+				<li><a href="deleteAuction.jsp">Remove Auction</a></li>
 				<li><a href="editAccount.jsp">Edit Account</a></li>
 				<li><a href="">Answer Question</a></li>
 				

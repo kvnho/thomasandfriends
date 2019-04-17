@@ -41,26 +41,27 @@
 		preparedStatement.setString(3, address);
 		preparedStatement.setString(4, username);
 		preparedStatement.setString(5, password);
-		if(((String)session.getAttribute("username")).equals("admin")){
-			preparedStatement.setInt(6, 2);
+		try{
+			if(((String)session.getAttribute("username")).equals("admin")){
+				preparedStatement.setInt(6, 2);
+			}
 		}
-		else{
+		catch(Exception e){
 			preparedStatement.setInt(6, 3);
 		}
+
 
 		//Run the query against the DB
 		preparedStatement.executeUpdate();
 
 		//Close the connection. Don't forget to do it, otherwise you're keeping the resources of the server allocated.
 		connection.close();
-		if(((String)session.getAttribute("username")).equals("admin")){
-			response.sendRedirect("adminWelcome.jsp");
-		}
 		
 		out.println("Account Created! <br> <a href='index.jsp'> Log in </a>");
 
 	}
 	catch (Exception e){
+		out.print(e);
 		if(i == 0){
 			out.println("Username already in use <br> <a href='index.jsp'> Try again </a>");
 			

@@ -12,11 +12,10 @@
 		<ul>
 			<li><a href="welcome.jsp">HOME</a></li>
 			<li><a href="createAuction.jsp">CREATE AUCTION</a></li>
-			<li><a href="listings.jsp">SEE LISTINGS</a></li>
-			<li><a href="alerts.jsp">ALERTS</a>
-			<li><a href="searchUsers.jsp">SEARCH USERS</a></li>
-			
-			
+			<li><a href="auctions.jsp">SEE AUCTIONS</a></li>
+			<li><a href="createAlert.jsp">CREATE ALERT</a></li>
+			<li><a href="alerts.jsp">ALERTS</a></li>
+			<li><a href="searchUsers.jsp">SEARCH USERS</a></li>	
 		</ul>
 		<hr>
 	</div>
@@ -91,6 +90,7 @@
 		while(resultUsers.next()){
 			// how to get info from set
 			String userID = resultUsers.getString("user_id");
+			if(userID.equals( (String)session.getAttribute("username"))) continue;
 			// SEND EMAIL/ALERT
 			String insert3 = "INSERT INTO email(from_to,to_from,date_time,subject,content)"
 				+ "VALUES (?,?,?,?,?)";
@@ -100,7 +100,7 @@
 			preparedStatement3.setString(2, userID);
 			preparedStatement3.setTimestamp(3, timestamp2);
 			preparedStatement3.setString(4, "You've Been Outbid!");
-			preparedStatement3.setString(5, "You've been outbid on Listing ID: " + listingID);
+			preparedStatement3.setString(5, "You've been outbid on Auction ID: " + auctionID);
 						
 			preparedStatement3.executeUpdate();
 		}

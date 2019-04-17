@@ -57,7 +57,14 @@
 			//deleteBid();
 		}
 		else if(requestor == 2){
-			String listingID = request.getParameter("listing_id");
+			String auctionID = request.getParameter("auction_id");
+			String auctionQuery = "SELECT * FROM auction WHERE auction_id=\"" + auctionID + "\""; 
+			ResultSet result = statement.executeQuery(auctionQuery);
+			String listingID = "";
+			if(result.next()){
+				listingID = result.getString("listing_id");		
+			}
+			
 			//Select listing_id from auction. Delete from listing where listing_id=?
 			String deleteListing = "DELETE FROM Listing WHERE listing_id=\"" + listingID + "\""; 
 			PreparedStatement deleteAuctionStatement = connection.prepareStatement(deleteListing);

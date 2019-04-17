@@ -1,0 +1,193 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.io.*,java.util.*,java.sql.*"%>
+<%@ page import="javax.servlet.http.*,javax.servlet.*"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Listings Page</title>
+</head>
+<body>
+	<div>
+		<h3>NAV BAR</h3>
+		<ul>
+			<li><a href="welcome.jsp">HOME</a></li>
+			<li><a href="createAuction.jsp">CREATE AUCTION</a></li>
+			<li><a href="listings.jsp">SEE LISTINGS</a></li>
+			<li><a href="alerts.jsp">ALERTS</a>
+			<li><a href="searchUsers.jsp">SEARCH USERS</a></li>
+			
+			
+		</ul>
+		<hr>
+	</div>
+	
+	<%
+		// compare dates to check for expired auctions	
+		
+		try{
+			String url = "jdbc:mysql://cs336db.cvs3tkn3ttbi.us-east-1.rds.amazonaws.com/BuyMe?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC";
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection connection = DriverManager.getConnection(url, "cs336", "thomasandfriends");
+			Statement statement = connection.createStatement();
+			
+			String query = "SELECT * FROM auction WHERE expired=0";
+			ResultSet result = statement.executeQuery(query);
+			while(result.next()){
+				// get end_date_time, and compare it with the current time to see if it expired, if expired, update expired=1
+				Timestamp now = new Timestamp(new java.util.Date().getTime());
+				Timestamp endDate = result.getTimestamp("end_date_time");
+				int auctionID = result.getInt("auction_id");
+				if(endDate.before(now)){
+					String insert = "UPDATE auction SET expired=1 WHERE auction_id=?";
+					PreparedStatement preparedStatement = connection.prepareStatement(insert);
+					preparedStatement.setInt(1, auctionID);
+					preparedStatement.executeUpdate();
+				}
+			}
+		}
+		catch(Exception e){
+			
+		}
+		
+	%>
+	
+	
+	<h1>Listings Page</h1>
+	<form action="searchedListings.jsp" method="GET">
+		<label>Search field: </label>
+		<input type="text" name="search_string">
+		<input type="submit" value="Search">		
+	</form>
+	<br>
+	<br>
+	<br>
+	<p>Order by: </p>
+	<form action="listings.jsp" method="GET">
+		<input type="hidden" name="order_by" value="1">
+		<input type="submit" value="$ - $$$">		
+	</form>
+	<form action="listings.jsp" method="GET">
+		<input type="hidden" name="order_by" value="2">
+		<input type="submit" value="$$$ - $">		
+	</form>
+	<form action="listings.jsp" method="GET">
+		<input type="hidden" name="order_by" value="3">
+		<input type="submit" value="Ending Soonest">		
+	</form>
+	<form action="listings.jsp" method="GET">
+		<input type="hidden" name="order_by" value="4">
+		<input type="submit" value="Ending Latest">		
+	</form>
+	<br>
+	<br>
+	<hr>
+	
+	<%
+		int order = -1;
+		try{
+			order = Integer.parseInt(request.getParameter("order_by"));
+		}
+		catch(Exception e){
+			
+		}
+	%>
+	
+	
+	
+	<%
+		try{
+			String url = "jdbc:mysql://cs336db.cvs3tkn3ttbi.us-east-1.rds.amazonaws.com/BuyMe?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC";
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection connection = DriverManager.getConnection(url, "cs336", "thomasandfriends");
+			Statement statement = connection.createStatement();
+			
+			String query = "SELECT * FROM Listing";
+			ResultSet result = statement.executeQuery(query);
+			while(result.next()){
+				
+				String listingID = result.getString("listing_id");
+				String itemCategory = result.getString("item_category");
+				
+				Statement auctionStatement = connection.createStatement();
+				//String auctionQuery = "SELECT * FROM auction WHERE listing_id=\"" + listingID + "\"";
+				// change the query below to add the filtering feature
+				String auctionQuery = "SELECT * FROM auction WHERE listing_id=\"" + listingID + "\" AND expired=0";
+				if(order == 1) auctionQuery = "SELECT * FROM auction WHERE listing_id=\"" + listingID + "\" AND expired=0 ORDER BY highest_bid ASC";
+				else if(order == 2) auctionQuery = "SELECT * FROM auction WHERE listing_id=\"" + listingID + "\" AND expired=0 ORDER BY highest_bid DESC";
+				else if(order == 3) auctionQuery = "SELECT * FROM auction WHERE listing_id=\"" + listingID + "\" AND expired=0 ORDER BY end_date_time DESC";
+				else if(order == 4) auctionQuery = "SELECT * FROM auction WHERE listing_id=\"" + listingID + "\" AND expired=0 ORDER BY end_date_time ASC";
+
+				ResultSet auctionResult = auctionStatement.executeQuery(auctionQuery);
+				
+				
+				double highestBid = 0;
+				int auctionID = 0;
+				double minPossible = 0;
+				String datePosted = "";
+				
+				if(auctionResult.next()){
+					highestBid = auctionResult.getDouble("highest_bid");
+					auctionID = auctionResult.getInt("auction_id");
+					minPossible = highestBid + 1;
+					datePosted = auctionResult.getString("date_time_posted");
+				%>
+					<p>LISTING ID: <%out.print(result.getString("listing_id")); %></p>
+					<p>ITEM NAME: <%out.print(result.getString("listing_name")); %></p>
+					<p>ITEM DESCRIPTION: <%out.print(result.getString("listing_description")); %></p>
+					<p>ITEM CATEGORY: <%out.print(result.getString("item_category")); %></p>
+					<p>AUCTION ENDS: <%out.print(datePosted); %></p>
+					<br>
+					<p>HIGHEST BID: $<%out.print(highestBid); %></p>
+					<form action="showAllBids.jsp" method="POST">
+						<input type="hidden" name="a_id" value="<%=auctionID%>">	
+						<input type="submit" value="Show Previous Bids">		
+					</form>
+					<br>
+					<form action="bidHandler.jsp" method="POST">
+						<br>
+						<label>Insert Bid: </label>
+						<input type="hidden" name="list_id" value="<%=listingID%>">							
+						<input type="hidden" name="auction_id" value="<%=auctionID%>">					
+						<input type="number" min="<%=minPossible%>" name="bid" step="any" value="<%=minPossible%>"/>
+						<br>
+						<label>Enter value to enable automatic bidding?: </label>
+						<input type="number" name="auto_bid" step="any" value="0"/>
+						<br>
+						<br>
+						<input type="submit" value="Submit Bid">	
+					</form>
+					<br>
+					<br>
+					<br>
+					<form action="similarListings.jsp" method="POST">
+						<input type="hidden" name="item_category" value="<%=itemCategory%>">	
+						<input type="submit" value="See Similar Listings">		
+					</form>
+					<br>
+					<hr>
+					<br>
+				<%
+				}
+				%>
+
+			<%
+			}
+
+			//Close the connection. Don't forget to do it, otherwise you're keeping the resources of the server allocated.
+			connection.close();
+	
+		}
+		catch (Exception e){
+			out.print(e);
+		}
+	
+	%>
+</body>
+<script type="text/javascript">
+	function alertName(){
+
+		alert("a");
+	} 
+</script> 
+</html>
