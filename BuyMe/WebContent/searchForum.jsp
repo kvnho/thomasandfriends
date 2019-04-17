@@ -5,9 +5,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Forum Page</title>
+<title>Search Forum Page</title>
 </head>
 <body>
+	
 	<div>
 		<h3>NAV BAR</h3>
 		<ul>
@@ -21,7 +22,8 @@
 		</ul>
 		<hr>
 	</div>
-	<h1>FORUM</h1>
+	<h1>SEARCH FORUM</h1>
+	
 	
 	<h3>Search Question</h3>
 	<form action="searchForum.jsp" method="GET">
@@ -51,6 +53,7 @@
 	<br>
 	<hr>
 	<%
+		String searchString = request.getParameter("search_string");
 		try{
 			String url = "jdbc:mysql://cs336db.cvs3tkn3ttbi.us-east-1.rds.amazonaws.com/BuyMe?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC";
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -66,7 +69,8 @@
 				type = userType.getInt("account_type");
 			}
 			
-			String getQuestions = "SELECT * FROM question;";
+			String getQuestions = "SELECT * FROM question WHERE question LIKE '%" + searchString + "%'" + "OR answer LIKE '%" +  searchString + "%'";
+			
 			ResultSet result = statement.executeQuery(getQuestions);
 			while(result.next())
 			{
