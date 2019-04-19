@@ -46,7 +46,7 @@
 			<select name="category">
 				<option value="Car">Car</option>
 				<option value="Plane">Plane</option>
-				<option value="Motorcylce">Motorcycle</option>
+				<option value="Motorcycle">Motorcycle</option>
 			</select>
 			<br>
 			<br>

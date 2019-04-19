@@ -111,7 +111,7 @@
 				double highestBid = result.getDouble("highest_bid");
 				int auctionID = result.getInt("auction_id");
 				double minPossible = highestBid + 1;
-				String datePosted = result.getString("date_time_posted");
+				String datePosted = result.getString("end_date_time");
 				
 				
 				String listingID = result.getString("listing_id");

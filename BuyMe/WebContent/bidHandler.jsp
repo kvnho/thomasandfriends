@@ -39,8 +39,8 @@
 		Timestamp timestamp0 = new Timestamp(dt.getTime());
 
 		// INSERT IN BID		
-		String insert = "INSERT INTO bid(buyer_id,amount,auction_id,date_time)"
-				+ "VALUES (?,?,?,?)";
+		String insert = "INSERT INTO bid(buyer_id,amount,auction_id,date_time,auto_bid)"
+				+ "VALUES (?,?,?,?,?)";
 		//Create a Prepared SQL statement allowing you to introduce the parameters of the query
 		PreparedStatement preparedStatement = connection.prepareStatement(insert);
 
@@ -49,6 +49,7 @@
 		preparedStatement.setDouble(2, bid);
 		preparedStatement.setInt(3, auctionID);
 		preparedStatement.setTimestamp(4, timestamp0);
+		preparedStatement.setDouble(5, autoBid);
 		preparedStatement.executeUpdate();
 		
 		
@@ -107,9 +108,27 @@
 	
 			
 	
-			//Close the connection. Don't forget to do it, otherwise you're keeping the resources of the server allocated.
-			connection.close();
-			out.print("Bid was successfully placed!");
+		//Close the connection. Don't forget to do it, otherwise you're keeping the resources of the server allocated.
+		connection.close();
+		out.print("Bid was successfully placed!");
+			
+		
+		String automaticBidding = "SELECT buyer_id, highest_bid, MAX(auto_bid) AS auto FROM BuyMe.bid NATURAL JOIN BuyMe.auction WHERE auction_id=31 AND auto_bid > highest_bid GROUP BY buyer_id";
+		ResultSet automaticBiddingSet = statement.executeQuery(automaticBidding);
+		while(automaticBiddingSet.next()){
+			ResultSet automaticBiddingSet2 = statement.executeQuery(automaticBidding);
+			
+			while(automaticBiddingSet2.next()){
+				String buyerID = automaticBiddingSet2.getString("buyer_id");
+				double highestBid = automaticBiddingSet2.getDouble("highest_bid");
+				double auto = automaticBiddingSet2.getDouble(3);
+				
+				
+			}
+		}
+			
+		
+		// also need to get the buyer_id of the guy with the current (highest_bid) bid on the auction
 		
 
 	}
